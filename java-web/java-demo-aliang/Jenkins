@@ -1,0 +1,15 @@
+node {
+   def mvnHome
+   def Path = "/server/scripts"
+   stage('Preparation') {
+      git 'https://github.com/davidgehuang/cicd.git'
+      echo 'git sucessed'
+      sh 'cd java-web/ && ls'
+   }
+   stage('Build') {
+      sh 'cd java-web/java-demo-aliang && mvn clean package'
+      
+      echo 'maven successed'
+      sh 'ls'
+   }
+}
