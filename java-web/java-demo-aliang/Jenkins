@@ -2,7 +2,7 @@ node {
    def mvnHome
    def Path = "/server/scripts"
    stage('Preparation') {
-      git 'https://github.com/davidgehuang/cicd.git'
+      git credentialsId: '4a13f301-b60e-4d91-b436-51c4906650ec', url: 'git@github.com:davidgehuang/cicd.git'
       echo 'git sucessed'
       sh 'cd java-web/ && ls'
    }
