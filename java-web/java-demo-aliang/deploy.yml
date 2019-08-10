@@ -2,9 +2,9 @@
 apiVersion: extensions/v1beta1 
 kind: Deployment
 metadata:
-  name: web
+  name: java-demo
 spec:
-  replicas: 3 
+  replicas: 1 
   selector:
     matchLabels:
       app: java-demo
@@ -14,13 +14,13 @@ spec:
         app: java-demo 
     spec:
       imagePullSecrets:
-      - name: $SECRET_NAME 
+      - name: $SECRET_NAME
       containers:
       - name: tomcat 
         image: $IMAGE_NAME 
         ports:
         - containerPort: 8080
-          name: web
+          name: java-demo
         livenessProbe:
           httpGet:
             path: /
@@ -35,12 +35,29 @@ spec:
           initialDelaySeconds: 60
           timeoutSeconds: 5
           failureThreshold: 12
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: beta.kubernetes.io/arch
+                operator: In
+                values:
+                - amd64
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            preference:
+              matchExpressions:
+              - key: image-wh 
+                operator: In
+                values:
+                - harbor
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: web
+  name: java-demo
 spec:
   type: NodePort
   selector:
@@ -54,13 +71,13 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: web 
+  name: java-demo 
 spec:
   rules:
-  - host: java.davidge.cn
+  - host: java-demo.davidge.cn
     http:
       paths:
       - path: /
         backend:
-          serviceName: web 
+          serviceName: java-demo 
           servicePort: 80
