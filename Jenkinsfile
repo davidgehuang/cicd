@@ -49,7 +49,9 @@ node {
                 #!/bin/bash
                 cd ${project_path} &&
                 kubectl version
+                sleep 1
                 kubectl get pod
+                sleep 1
                 kubectl apply -f ${k8_file}
                 echo "apply ok"
                 cat ${k8_file}
